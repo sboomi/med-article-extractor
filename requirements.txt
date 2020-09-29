@@ -1,0 +1,24 @@
+astroid==2.4.0
+beautifulsoup4==4.9.2
+bs4==0.0.1
+certifi==2020.6.20
+chardet==3.0.4
+colorama==0.4.3
+idna==2.10
+isort==4.3.21
+lazy-object-proxy==1.4.3
+mccabe==0.6.1
+numpy @ file:///D:/bld/numpy_1595523081734/work
+pandas @ file:///D:/bld/pandas_1599601180493/work
+pylint==2.5.0
+PyPDF2==1.26.0
+python-dateutil==2.8.1
+pytz==2020.1
+requests==2.24.0
+selenium==3.141.0
+six @ file:///home/conda/feedstock_root/build_artifacts/six_1590081179328/work
+soupsieve==2.0.1
+tika==1.24
+urllib3==1.25.10
+wincertstore==0.2
+wrapt==1.12.1

@@ -1,0 +1,5 @@
+notebooktest/
+.vscode/
+.idea/
+geckodriver.log
+get-google-scholar-articles/
