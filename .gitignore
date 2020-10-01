@@ -3,3 +3,5 @@ notebooktest/
 .idea/
 geckodriver.log
 get-google-scholar-articles/
+__pycache__/
+trash/
