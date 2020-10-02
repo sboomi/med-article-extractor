@@ -37,7 +37,7 @@ class PubMed:
         content = json.loads(r)
         return content['esearchresult']['idlist'] if content['esearchresult']['idlist'] else None
 
-    def return_information(self, soup):
+    def return_information(self, soup, as_dataframe=False):
         data_info = {
             'title' : [],
             'abstract' : [],
@@ -79,8 +79,11 @@ class PubMed:
 
             data_info['authors'].append(", ".join([author.initials.text + ". " + author.lastname.text for author in article.find_all('author') if author.lastname]))
 
-        df = pd.DataFrame(data_info)
-        return df
+        if as_dataframe:
+            df = pd.DataFrame(data_info)
+            return df
+        else:
+            return data_info
 
 
 class PMC(PubMed):

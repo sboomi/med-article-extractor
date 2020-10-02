@@ -1,9 +1,11 @@
 import os
 import re
+import datetime
 from tika import parser
 from pymed.pymed import PubMed, retrieve_informations
 from collections import defaultdict
 import json
+from bs4 import BeautifulSoup
 
 pdf_path = "sample/pdfs"
 list_pdf = os.listdir(pdf_path)
@@ -24,27 +26,48 @@ for title in list_titles:
 
 url_ids = pm.fetch(list_ids, retrieve_mode='xml')
 obj_results = retrieve_informations(url_ids, format="xml")
-df = pm.return_information(obj_results)
+data_dict = pm.return_information(obj_results)
+
 
 #PDF extraction
 wordcount = []
-aav_terms = {}
+aav_terms = []
+ref_publications = []
 
-regex_aav = r"AAV(\d*/|\d*-)*\w*(\([\w, -]*\))*(-\w+)*"
+regex_aav = r"AAV(\d*\/|\d*-)*\w*(\([\w, -]*\))*(-\w+)*"
+ref_reg = r"^\d+( *\**\.)* ([A-Z]\S* ([A-Z]\S* )*[A-Z]\w*(, )*)+"
 
-for id, pdf in zip(df["pubmed_id"].values, list_pdf):
+for pdf in list_pdf:
     filename = os.path.join(pdf_path,pdf)
     d = defaultdict(int)
-    raw = parser.from_file(filename)
-    s = raw['content']
-    wordcount.append(len(s))
+    rel_publ = []
 
-    for match in re.finditer(regex_aav, s, re.M):
+    raw = parser.from_file(filename, xmlContent=True)
+    soup = BeautifulSoup(raw['content'], 'lxml')
+    wordcount.append(len(soup.text))
+
+    for match in re.finditer(regex_aav, soup.text, re.M):
         d[match.group(0)] += 1
-    aav_terms[str(id)] = {str(k): v for k,v in d.items()}
+    aav_terms.append({k: v for k,v in d.items()})
 
-df["wordcount"] = wordcount
-df.to_excel("sample/publication_info.xlsx", index=None)
+    for el in soup.find_all('p'):
+        if re.search(ref_reg,el.text,re.M) and re.search(regex_aav,el.text,re.M | re.I):
+            rel_publ.append(el.text)
+    ref_publications.append(rel_publ)
 
-with open("sample/aav_info.json", "w", encoding="utf-8") as file:
-    json.dump(aav_terms, file, ensure_ascii=False, indent=4)
+data_dict["wordcount"] = wordcount
+data_dict["aav_terms"] = aav_terms
+data_dict["ref_publications"] = ref_publications  
+
+
+with open("sample/pdf_data.json", "w", encoding="utf-8") as file:
+    for i in range(len(data_dict["pubmed_id"])):
+        json_data = {str(k):(str(v[i]) if isinstance(v[i], datetime.datetime) else v[i]  ) for k,v in data_dict.items()}
+        try:
+            json.dump(json_data, file, ensure_ascii=False, indent=4)
+        except TypeError:
+            print("""Error, types authorized by JSON are 
+int, float, bool, str, dict, list, None
+
+Please run type(obj) to check if the types are fitting
+            """)

@@ -29,11 +29,22 @@ dependencies:
     - beautifulsoup4==4.9.2
     - bs4==0.0.1
     - chardet==3.0.4
+    - click==7.1.2
+    - et-xmlfile==1.0.1
+    - flask==1.1.2
     - idna==2.10
+    - itsdangerous==1.1.0
+    - jdcal==1.4.1
+    - jinja2==2.11.2
+    - lxml==4.5.2
+    - markupsafe==1.1.1
+    - neo4j-driver==4.1.1
+    - openpyxl==3.0.5
     - pypdf2==1.26.0
     - requests==2.24.0
     - selenium==3.141.0
     - soupsieve==2.0.1
     - tika==1.24
     - urllib3==1.25.10
+    - werkzeug==1.0.1
 prefix: d:\Users\shadi\Anaconda3\envs\pdf-extraction-env
