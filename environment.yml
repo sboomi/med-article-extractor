@@ -32,6 +32,7 @@ dependencies:
     - click==7.1.2
     - et-xmlfile==1.0.1
     - flask==1.1.2
+    - flask-wtf==0.14.3
     - idna==2.10
     - itsdangerous==1.1.0
     - jdcal==1.4.1
@@ -47,4 +48,5 @@ dependencies:
     - tika==1.24
     - urllib3==1.25.10
     - werkzeug==1.0.1
-prefix: d:\Users\shadi\Anaconda3\envs\pdf-extraction-env
+    - wtforms==2.3.3
+prefix: D:\Users\shadi\Anaconda3\envs\pdf-extraction-env
