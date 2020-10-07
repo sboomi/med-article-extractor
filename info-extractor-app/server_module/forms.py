@@ -5,5 +5,5 @@ from wtforms import SubmitField
 
 class UploadForm(FlaskForm):
     pdf = FileField("Enter PDF here",
-                    validators=[FileRequired, FileAllowed(['pdf'], 'Only pdfs allowed!')])
+                    validators=[FileRequired(), FileAllowed(['pdf'], 'Only pdfs allowed!')])
     submit = SubmitField("Upload PDF")

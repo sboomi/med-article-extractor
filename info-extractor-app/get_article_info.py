@@ -60,13 +60,16 @@ data_dict["aav_terms"] = aav_terms
 data_dict["ref_publications"] = ref_publications  
 
 
+list_json = []
+
 with open("sample/pdf_data.json", "w", encoding="utf-8") as file:
     for i in range(len(data_dict["pubmed_id"])):
-        json_data = {str(k):(str(v[i]) if isinstance(v[i], datetime.datetime) else v[i]  ) for k,v in data_dict.items()}
-        try:
-            json.dump(json_data, file, ensure_ascii=False, indent=4)
-        except TypeError:
-            print("""Error, types authorized by JSON are 
+        json_data = {str(k): (str(v[i]) if isinstance(v[i], datetime.datetime) else v[i]) for k, v in data_dict.items()}
+        list_json.append(json_data)
+    try:
+        json.dump(list_json, file, ensure_ascii=False, indent=4)
+    except TypeError:
+        print("""Error, types authorized by JSON are 
 int, float, bool, str, dict, list, None
 
 Please run type(obj) to check if the types are fitting

@@ -11,6 +11,7 @@
     <p>A JSON will serve as an output responses</p>
 
     <form method="POST" enctype="multipart/form-data">
+    {{ form.hidden_tag() }}
         <div class="form-group">
             {{ form.pdf.label(class="form-control-label")  }}
             {{ form.pdf(class="form-control-file") }}
