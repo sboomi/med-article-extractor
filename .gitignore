@@ -6,3 +6,4 @@ get-google-scholar-articles/
 __pycache__/
 trash/
 info-extractor-app/server_module/static/pdfs/*
+articlesdb.db

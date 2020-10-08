@@ -36,6 +36,17 @@ docker stop app-demo
 
 `docker-compose.yml` coming soon!
 
+### Database
+
+If you're using a SQL database, please run the following command :
+
+```shell
+cd info-extractor-app
+python -c "from server_module import db, app" "with app.app_context(): db.create_all()"
+```
+
+
+
 ## Troubleshooting
 
 PDF extraction might not be the best method to get some information such as the ID. The main API would be more useful. Besides, `PyPDF2` can have some trouble sorting data properly.

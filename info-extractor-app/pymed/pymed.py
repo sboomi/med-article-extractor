@@ -7,6 +7,7 @@ import re
 import pandas as pd
 from datetime import datetime
 
+
 class PubMed:
     def __init__(self):
         self.url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
@@ -37,32 +38,48 @@ class PubMed:
         content = json.loads(r)
         return content['esearchresult']['idlist'] if content['esearchresult']['idlist'] else None
 
-    def return_information(self, soup, as_dataframe=False):
+
+    @staticmethod
+    def return_information(soup, as_dataframe=False):
         data_info = {
-            'title' : [],
-            'abstract' : [],
-            'pubmed_id' : [],
-            'publication_date' : [],
-            'keywords' : [],
-            'journal' : [],
-            'doi' : [],
-            'authors' : []
+            'title': [],
+            'abstract': [],
+            'pubmed_id': [],
+            'publication_date': [],
+            'keywords': [],
+            'journal': [],
+            'doi': [],
+            'authors': []
         }
 
-
         for article in soup.find_all('pubmedarticle'):
-            data_info['title'].append(article.articletitle.text)
-            data_info['abstract'].append(article.abstract.text)
+            data_info['title'].append(article.articletitle.text if article.articletitle else "")
+            data_info['abstract'].append(article.abstract.text if article.abstract else "")
             data_info['pubmed_id'].append(int(article.pmid.text))
-            data_info['publication_date'].append( datetime.strptime("/".join(article.find('pubmedpubdate', {"pubstatus" : "pubmed"}).text.split()), '%Y/%m/%d/%H/%M') )
+
+            pub_date_str = "/".join(article.find('pubmedpubdate', {"pubstatus": "pubmed"}).text.split())
+            try:
+                data_info['publication_date'].append(
+                    datetime.strptime(pub_date_str,
+                                      '%Y/%m/%d/%H/%M'))
+            except ValueError:
+                try:
+                    data_info['publication_date'].append(
+                        datetime.strptime(pub_date_str,
+                                          '%Y/%m/%d/%H/%M'))
+                except ValueError:
+                    data_info['publication_date'].append(None)
+
+
             try:
                 data_info['keywords'].append(", ".join(article.keywordlist.text.split()))
             except:
                 print("No keywords available for this article")
                 data_info['keywords'].append("")
 
-            try:    
-                data_info['journal'].append(article.journal.title.text.strip() + ', ' + article.journal.isoabbreviation.text.strip())
+            try:
+                data_info['journal'].append(
+                    article.journal.title.text.strip() + ', ' + article.journal.isoabbreviation.text.strip())
             except:
                 print("Journal not found. Trying Medline instead.")
                 try:
@@ -70,14 +87,16 @@ class PubMed:
                 except:
                     print("No journal found")
                     data_info['journal'].append("")
-            
+
             try:
                 data_info['doi'].append(article.find('elocationid', {'eidtype': 'doi'}).text)
             except:
                 print("Error : couldn't find the DOI")
                 data_info['doi'].append("")
 
-            data_info['authors'].append(", ".join([author.initials.text + ". " + author.lastname.text for author in article.find_all('author') if author.lastname]))
+            data_info['authors'].append(", ".join(
+                [author.initials.text + ". " + author.lastname.text for author in article.find_all('author') if
+                 author.lastname]))
 
         if as_dataframe:
             df = pd.DataFrame(data_info)
@@ -86,18 +105,20 @@ class PubMed:
             return data_info
 
 
+
+
+
 class PMC(PubMed):
     def __init__(self):
         self.url = "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/"
         self.db = "pmc"
 
 
-
 def retrieve_informations(link, format="json"):
     r = requests.get(link).content
-    if format=="json":
+    if format == "json":
         return json.loads(r)
-    if format=="xml":
+    if format == "xml":
         try:
             return BeautifulSoup(r, 'lxml')
         except FeatureNotFound:

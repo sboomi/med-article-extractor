@@ -1,0 +1,37 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <h3>Evaluate your PDF here</h3>
+    <p>A JSON will serve as an output responses</p>
+
+    <form method="POST" action="">
+    {{ form.hidden_tag() }}
+        <div class="form-group">
+            {{ form.keywords.label(class="form-control-label")  }}
+            {{ form.keywords(class="form-control") }}
+        <small class="form-text text-muted">Keywords must be separated by spaces</small>
+
+            {% if form.keywords.errors %}
+                {% for error in form.keywords.errors %}
+                    <span class="text-danger">{{ error }}</span></br>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        <div class="form-group">
+            {{ form.n_ids.label(class="form-control-label")  }}
+            {{ form.n_ids(class="form-control") }}
+
+            {% if form.n_ids.errors %}
+                {% for error in form.n_ids.errors %}
+                    <span class="text-danger">{{ error }}</span></br>
+                {% endfor %}
+            {% endif %}
+        </div>
+
+        {{ form.submit(class="btn btn-primary") }}
+    </form>
+
+    <p>Want to upload a PDF? Go <a href="{{ url_for('upload_zone') }}">here</a></p>
+{% endblock content %}

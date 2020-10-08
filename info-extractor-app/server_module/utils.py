@@ -3,6 +3,8 @@ from tika import parser
 from pymed.pymed import PubMed, retrieve_informations
 from collections import defaultdict
 from bs4 import BeautifulSoup
+from server_module import db
+from server_module.models import Article
 
 
 def get_pdf_content(pdf_file):
@@ -91,5 +93,34 @@ def get_ref_count(soup):
 
 
 def get_word_count(text):
-    list_words = [word for word in re.split(r"\W", text) if word]
+    list_words = [word for word in re.split(r"\s", text) if word]
     return len(list_words)
+
+
+def return_information_as_batch(id_list, source_db, batch_size=20, db_output="sql"):
+    count = 0
+
+    if type(batch_size) is float and 0 < batch_size < 1:
+        batch_size = len(id_list) * batch_size
+    batch_ids = [",".join(id_list[portion:portion + batch_size]) for portion in range(0, len(id_list), batch_size)]
+
+    for batch in batch_ids:
+        url = source_db.fetch(batch)
+        if len(url) > 2000:
+            raise Exception("Error: URL too long. Please select a lower batch size.")
+        soup = retrieve_informations(url, format='xml')
+        data = source_db.return_information(soup, as_dataframe=False)
+        if db_output == "sql":
+            for i in range(len(data['pubmed_id'])):
+                if not Article.query.filter_by(pubmed_id=data['pubmed_id'][i]).first():
+                    article = Article(pubmed_id=int(data['pubmed_id'][i]),
+                                      abstract=data['abstract'][i],
+                                      title=data['title'][i],
+                                      publication_date=data['publication_date'][i],
+                                      keywords=data['keywords'][i],
+                                      doi=data['doi'][i],
+                                      authors=data['authors'][i])
+                    db.session.add(article)
+                    db.session.commit()
+                    count += 1
+    return f"{count} out of {len(id_list)} uploaded!"
