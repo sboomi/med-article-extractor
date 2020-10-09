@@ -74,29 +74,31 @@ class PubMed:
             try:
                 data_info['keywords'].append(", ".join(article.keywordlist.text.split()))
             except:
-                print("No keywords available for this article")
+                #print("No keywords available for this article")
                 data_info['keywords'].append("")
 
             try:
                 data_info['journal'].append(
                     article.journal.title.text.strip() + ', ' + article.journal.isoabbreviation.text.strip())
             except:
-                print("Journal not found. Trying Medline instead.")
+                #print("Journal not found. Trying Medline instead.")
                 try:
                     data_info['journal'].append(article.medlinejournalinfo.medlineta.text)
                 except:
-                    print("No journal found")
+                    #print("No journal found")
                     data_info['journal'].append("")
 
             try:
                 data_info['doi'].append(article.find('elocationid', {'eidtype': 'doi'}).text)
             except:
-                print("Error : couldn't find the DOI")
+                #print("Error : couldn't find the DOI")
                 data_info['doi'].append("")
 
-            data_info['authors'].append(", ".join(
-                [author.initials.text + ". " + author.lastname.text for author in article.find_all('author') if
-                 author.lastname]))
+            if data_info['authors']:
+                data_info['authors'].append(", ".join([author.initials.text + ". " + author.lastname.text for author in
+                                                       article.find_all('author') if author.lastname]))
+            else:
+                data_info['authors'].append("")
 
         if as_dataframe:
             df = pd.DataFrame(data_info)

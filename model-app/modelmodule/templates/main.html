@@ -1,0 +1,32 @@
+{% extends "layout.html" %}
+
+{% block content %}
+
+    <div class="content-section">
+        <form method="POST" action="">
+            {{  dbform.hidden_tag() }}
+            <fieldset class="form-group">
+                <legend class="border-bottom mb-4">{{ legend }}</legend>
+                <div class="form-group">
+                    {{ dbform.db_choice.label(class="form-control-label") }}
+                </div>
+                {% for subchoice in dbform.db_choice %}
+                <div class="form-check">
+                    {{ subchoice(class="form-check-input") }}
+                    {{ subchoice.label(class="form-check-label") }}
+                </div>
+                {% endfor %}
+            </fieldset>
+            <div class="form-group">
+                {{ dbform.submit(class="btn btn-outline-info") }}
+            </div>
+        </form>
+    </div>
+
+    {% if options.database %}
+        <div class="content-section">
+            <p>You chose {{ options.database }}</p>
+        </div>
+    {% endif %}
+
+{% endblock content %}

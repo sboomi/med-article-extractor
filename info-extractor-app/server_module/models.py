@@ -5,8 +5,7 @@ class Article(db.Model):
     __tablename__ = "articles"
 
     id = db.Column(db.Integer, primary_key=True)
-    pubmed_id = db.Column(db.String(20), unique=True)
-    title = db.Column(db.String(100))
+    title = db.Column(db.String(250))
     publication_date = db.Column(db.DateTime)
     abstract = db.Column(db.Text)
     keywords = db.Column(db.String(250))

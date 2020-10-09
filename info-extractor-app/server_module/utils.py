@@ -102,7 +102,7 @@ def return_information_as_batch(id_list, source_db, batch_size=20, db_output="sq
 
     if type(batch_size) is float and 0 < batch_size < 1:
         batch_size = len(id_list) * batch_size
-    batch_ids = [",".join(id_list[portion:portion + batch_size]) for portion in range(0, len(id_list), batch_size)]
+    batch_ids = [id_list[portion:portion + batch_size] for portion in range(0, len(id_list), batch_size)]
 
     for batch in batch_ids:
         url = source_db.fetch(batch)
@@ -112,8 +112,8 @@ def return_information_as_batch(id_list, source_db, batch_size=20, db_output="sq
         data = source_db.return_information(soup, as_dataframe=False)
         if db_output == "sql":
             for i in range(len(data['pubmed_id'])):
-                if not Article.query.filter_by(pubmed_id=data['pubmed_id'][i]).first():
-                    article = Article(pubmed_id=int(data['pubmed_id'][i]),
+                if not Article.query.filter_by(id=data['pubmed_id'][i]).first():
+                    article = Article(id=data['pubmed_id'][i],
                                       abstract=data['abstract'][i],
                                       title=data['title'][i],
                                       publication_date=data['publication_date'][i],

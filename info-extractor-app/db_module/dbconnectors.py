@@ -21,7 +21,13 @@ class SqliteConnector(DbConnector):
         self.driver = SQLAlchemy()
 
     def export_flask_config(self):
-        return "SQLALCHEMY_DATABASE_URI", self.uri
+        return "SQLALCHEMY_DATABASE_URI", self.uri, SQLAlchemy()
+
+    def create_database(self):
+        pass
+
+    def read_table(self, table, columns=None):
+        pass
 
 
 class MongoDbConnector(DbConnector):
