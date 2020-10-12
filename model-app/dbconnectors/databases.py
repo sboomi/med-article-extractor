@@ -15,13 +15,16 @@ class SqlConnector(DbConnector):
         super().__init__(uri)
         self.driver = create_engine(self.uri)
 
-    def retrieve_information_as_df(self, table, columns=None, limit=20, offset=20):
+    def retrieve_information_as_df(self, table, columns=None, limit=20, offset=0):
         if columns:
             col_string = ",".join(columns)
         else:
             col_string = "*"
         sql_query = f"SELECT {col_string} FROM {table} LIMIT {limit} OFFSET {offset}"
-        return pd.read_sql_query(sql_query, con=self.driver)
+        conn = self.driver.connect()
+        df = pd.read_sql_query(sql_query, con=conn)
+        conn.close
+        return df
 
 
 class SqlLiteConnector(SqlConnector):

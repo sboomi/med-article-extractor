@@ -4,6 +4,16 @@ The aim of this project is to extract informations form a scientific article (PD
 
 The data will be then transferred to a Neo4j database.
 
+The second part of the project is to find the main topics from a posted abstract. 
+
+The project is divided in three main parts
+
+* `info-extractor-app`, an app where you can extract information from a PDF or fill up entries in the database
+* `model-app`, an app written udner Streamlit dedicated to the model's conception
+* `article-app`, an app exploiting the models directly
+
+**Note :** this project was designed to support several databases, but due to a time problem, only SQLite is currently supported.
+
 ## Getting started
 
 ### Conda (recommended)

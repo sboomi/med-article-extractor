@@ -1,6 +1,15 @@
 {% extends "layout.html" %}
 
 {% block content %}
+    <div class="row">
+    {% for topic in topics %}
+        <div class="m-1">
+            <button type="button" class="btn btn-secondary btn-sm">{{ topic }}</button>
+        </div>
+
+    {% endfor %}
+    </div>
+
     <h1 class="mt-4">Research an article on seaRcH.D</h1>
         <p>Don't worry about your request being too long. Our database and query services will take care of the rest.</p>
         <form method="POST" action="">
