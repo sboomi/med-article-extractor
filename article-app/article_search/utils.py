@@ -6,24 +6,44 @@ from sklearn.metrics.pairwise import cosine_similarity
 
 
 def load_model(filepath):
+    """
+
+    :param filepath:
+    :return:
+    """
     with open(filepath, 'rb') as file:
         model = pickle.load(file)
     return model
 
 
 def load_parameters():
+    """
+
+    :return:
+    """
     with open('article_search/ressources/nlpparams.json', 'r') as file:
         nlp_params = json.load(file)
     return nlp_params
 
 
 def display_topics(model, feature_names, no_top_words):
+    """
+
+    :param model:
+    :param feature_names:
+    :param no_top_words:
+    """
     for topic_idx, topic in enumerate(model.components_):
         print("Topic {}:".format(topic_idx))
         print(" ".join([feature_names[i] for i in topic.argsort()[:-no_top_words - 1:-1]]))
 
 
 def query_preprocessing(query):
+    """
+
+    :param query:
+    :return:
+    """
     nlp_params = load_parameters()
     tokenizer = re.compile(nlp_params["tokenizer"], re.M)
     matches = re.finditer(tokenizer, query)

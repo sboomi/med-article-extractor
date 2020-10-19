@@ -33,7 +33,7 @@ pip install -r requirements.txt
 
 ### Docker
 
-For the app
+For the app (note: it might not work because of the database inclusion)
 
 ```shell
 cd article-app
@@ -55,6 +55,32 @@ cd info-extractor-app
 python -c "from server_module import db, app" "with app.app_context(): db.create_all()"
 ```
 
+## Launch the app
+
+**Article app**
+
+```shell
+cd article-app
+export FLASK_APP=server.py
+python server.py
+```
+
+**Model app**
+
+```shell
+cd model-app
+streamlit run stapp.py 
+```
+
+**Extractor app**
+
+```shell
+cd info-extractor-app
+python -c "from server_module import db, app" 
+python -c "with app.app_context(): db.create_all()"
+export FLASK_APP=server.py
+python server.py
+```
 
 
 ## Troubleshooting
